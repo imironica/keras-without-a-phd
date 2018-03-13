@@ -1,0 +1,4 @@
+dataset/images/test/
+dataset/images/train/
+dataset/mnist_train.csv
+dataset/mnist_test.csv
