@@ -22,9 +22,9 @@ from keras.optimizers import Adam
 xTrain, yTrain, xTest, yTest, yLabels = readDatabase(reshape=True)
 
 # Network parameters
-firstConvLayerDepth = 6
-secondConvLayerDepth = 12
-thirdConvLayerDepth = 24
+firstConvLayerDepth = 4
+secondConvLayerDepth = 8
+thirdConvLayerDepth = 12
 numberOfNeurons = 200
 
 # Training hyperparameters
@@ -39,7 +39,7 @@ featureSize = xTrain.shape[1]
 
 history = AccuracyHistory()
 verbose = 1
-showPlot = True
+showPlot = False
 
 # Network architecture
 
@@ -64,6 +64,7 @@ model.add(Conv2D(thirdConvLayerDepth, kernel_size=(5, 5),
 # output is 7x7
 model.add(Flatten())
 model.add(Dense(numberOfNeurons, activation='relu'))
+model.add(Dropout(0.25))
 model.add(Dense(numberOfClasses, activation='softmax'))
 
 sgd = Adam(lr=learningRate)
@@ -88,4 +89,4 @@ if showPlot:
     showConfusionMatrix(yLabels, predictedValues)
 
 
-# Acuracy 0.9862
+# Acuracy 0.9853

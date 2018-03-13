@@ -27,23 +27,22 @@ np.random.seed(0)
 # Read the training / testing dataset and labels
 xTrain, yTrain, xTest, yTest, yLabels = readDatabase()
 
-# Network layer parameters
-
+# Network parameters
 layer1Size = 200
 layer2Size = 100
 layer3Size = 60
 layer4Size = 30
 
-# Learning hyper parameters
+# Train hyper-parameters
 learningRate = 0.003
-
-noOfEpochs = 10
+decay = 0.00035
+noOfEpochs = 9
 batchSize = 32
+
+# Program parameters
 
 numberOfClasses = yTrain.shape[1]
 featureSize = xTrain.shape[1]
-
-# Program parameters
 
 history = AccuracyHistory()
 verbose = 1
@@ -71,7 +70,7 @@ model.add(Dense(units=layer4Size,
 model.add(Dense(numberOfClasses, kernel_initializer="uniform", activation="softmax"))
 
 # Network training
-sgd = Adam(lr=learningRate)
+sgd = Adam(lr=learningRate, decay=decay)
 model.compile(optimizer=sgd,
               loss='categorical_crossentropy',
               metrics=['accuracy'])

@@ -1,23 +1,59 @@
-from util import readDatabase
-from keras.preprocessing.image import ImageDataGenerator
+from util import readDatabase, AccuracyHistory, showPerformance, showConfusionMatrix
+from keras.layers.core import Activation
+from keras.optimizers import SGD
+from keras.layers import Dense
 from keras.models import Sequential
-from keras.layers.core import Dense, Dropout, Activation, Flatten
-from keras.layers.convolutional import Convolution2D, MaxPooling2D
-from keras.optimizers import SGD, Adadelta, Adagrad
-from keras.utils import np_utils, generic_utils
+import numpy as np
 
+import tensorflow as tf
+print("Tensorflow version " + tf.__version__)
+tf.set_random_seed(0)
+np.random.seed(0)
 
-xTrain, yTrain, xTest, yTest = readDatabase()
+# Read the training / testing dataset and labels
+xTrain, yTrain, xTest, yTest, yLabels = readDatabase()
 
+# Network parameters
+learningRate = 0.003
+
+noOfEpochs = 20
+batchSize = 32
+
+numberOfClasses = yTrain.shape[1]
+featureSize = xTrain.shape[1]
+
+history = AccuracyHistory()
+verbose = 1
+showPlot = True
+
+# Network architecture
 model = Sequential()
-model.add(Dense(input_dim=784, kernel_initializer="uniform", units=10))
+model.add(Dense(input_dim=featureSize,
+                kernel_initializer="uniform",
+                units=numberOfClasses))
 model.add(Activation('softmax'))
 
-sgd = SGD(lr=0.01)
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+# Network training
+sgd = SGD(lr=learningRate)
+model.compile(optimizer=sgd,
+              loss='categorical_crossentropy',
+              metrics=['accuracy'])
 
-model.fit(x=xTrain, y=yTrain, epochs=10, batch_size=32, verbose=1)
+model.fit(x=xTrain,
+          y=yTrain,
+          epochs=noOfEpochs,
+          batch_size=batchSize,
+          verbose=verbose,
+          callbacks=[history])
 
 (loss, accuracy) = model.evaluate(xTest, yTest)
-print("[INFO] loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
 
+showPerformance(accuracy, loss, noOfEpochs, history, plot=showPlot)
+
+if showPlot:
+    predictedValues = model.predict(xTest, batch_size=1)
+    showConfusionMatrix(yLabels, predictedValues)
+
+
+# Accuracy obtained:
+# 0.9187

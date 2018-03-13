@@ -1,23 +1,23 @@
 from util import readDatabase, AccuracyHistory, showPerformance, showConfusionMatrix
 from keras.optimizers import Adam
 from keras.layers import Dense
+from keras.layers import Dropout
 from keras.models import Sequential
 import numpy as np
 
 # neural network with 5 layers
 #
 # · · · · · · · · · ·          (input data, flattened pixels)       X [batch, 784]   # 784 = 28*28
-# \x/x\x/x\x/x\x/x\x/       -- fully connected layer (relu)         W1 [784, 200]      B1[200]
+# \x/x\x/x\x/x\x/x\x/ ✞     -- fully connected layer (relu+dropout) W1 [784, 200]      B1[200]
 #  · · · · · · · · ·                                                Y1 [batch, 200]
-#   \x/x\x/x\x/x\x/         -- fully connected layer (relu)         W2 [200, 100]      B2[100]
+#   \x/x\x/x\x/x\x/ ✞       -- fully connected layer (relu+dropout) W2 [200, 100]      B2[100]
 #    · · · · · · ·                                                  Y2 [batch, 100]
-#     \x/x\x/x\x/           -- fully connected layer (relu)         W3 [100, 60]       B3[60]
+#     \x/x\x/x\x/ ✞         -- fully connected layer (relu+dropout) W3 [100, 60]       B3[60]
 #      · · · · ·                                                    Y3 [batch, 60]
-#       \x/x\x/             -- fully connected layer (relu)         W4 [60, 30]        B4[30]
+#       \x/x\x/ ✞           -- fully connected layer (relu+dropout) W4 [60, 30]        B4[30]
 #        · · ·                                                      Y4 [batch, 30]
 #         \x/               -- fully connected layer (softmax)      W5 [30, 10]        B5[10]
 #          ·                                                        Y5 [batch, 10]
-
 
 import tensorflow as tf
 print("Tensorflow version " + tf.__version__)
@@ -27,17 +27,16 @@ np.random.seed(0)
 # Read the training / testing dataset and labels
 xTrain, yTrain, xTest, yTest, yLabels = readDatabase()
 
-# Network layer parameters
-
+# Network parameters
 layer1Size = 200
 layer2Size = 100
 layer3Size = 60
 layer4Size = 30
-
-# Learning hyper parameters
 learningRate = 0.003
+decay = 0.000035
 
-noOfEpochs = 10
+# Train hyper-parameters
+noOfEpochs = 20
 batchSize = 32
 
 numberOfClasses = yTrain.shape[1]
@@ -55,23 +54,27 @@ model.add(Dense(input_dim=featureSize,
                 kernel_initializer="uniform",
                 units=layer1Size,
                 activation='relu'))
+model.add(Dropout(0.25))
 
 model.add(Dense(units=layer2Size,
                 activation="relu",
                 kernel_initializer="uniform"))
+model.add(Dropout(0.25))
 
 model.add(Dense(units=layer3Size,
                 activation="relu",
                 kernel_initializer="uniform"))
+model.add(Dropout(0.25))
 
 model.add(Dense(units=layer4Size,
                 activation="relu",
                 kernel_initializer="uniform"))
+model.add(Dropout(0.25))
 
 model.add(Dense(numberOfClasses, kernel_initializer="uniform", activation="softmax"))
 
 # Network training
-sgd = Adam(lr=learningRate)
+sgd = Adam(lr=learningRate, decay=decay)
 model.compile(optimizer=sgd,
               loss='categorical_crossentropy',
               metrics=['accuracy'])
@@ -93,4 +96,4 @@ if showPlot:
 
 
 # Accuracy obtained:
-# 0.9785
+# 0.9789
