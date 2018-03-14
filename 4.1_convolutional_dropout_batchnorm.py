@@ -7,17 +7,17 @@ from keras.optimizers import Adam
 
 # Neural network structure for this sample:
 #
-# · · · · · · · · · ·      (input data, 1-deep)                 X [batch, 28, 28, 1]
-# @ @ @ @ @ @ @ @ @ @   -- conv. layer 5x5x1=>4 stride 1        W1 [5, 5, 1, 4]        B1 [4]
-# ∶∶∶∶∶∶∶∶∶∶∶∶∶∶∶∶∶∶∶                                           Y1 [batch, 28, 28, 4]
-#   @ @ @ @ @ @ @ @     -- conv. layer 5x5x4=>8 stride 2        W2 [5, 5, 4, 8]        B2 [8]
-#   ∶∶∶∶∶∶∶∶∶∶∶∶∶∶∶                                             Y2 [batch, 14, 14, 8]
-#     @ @ @ @ @ @       -- conv. layer 4x4x8=>12 stride 2       W3 [4, 4, 8, 12]       B3 [12]
-#     ∶∶∶∶∶∶∶∶∶∶∶                                               Y3 [batch, 7, 7, 12] => reshaped to YY [batch, 7*7*12]
-#      \x/x\x\x/        -- fully connected layer (relu)         W4 [7*7*12, 200]       B4 [200]
-#       · · · ·                                                 Y4 [batch, 200]
-#       \x/x\x/         -- fully connected layer (softmax)      W5 [200, 10]           B5 [10]
-#        · · ·                                                  Y [batch, 10]
+# · · · · · · · · · ·      (input data, 1-deep)
+# @ @ @ @ @ @ @ @ @ @   -- conv. layer
+# ∶∶∶∶∶∶∶∶∶∶∶∶∶∶∶∶∶∶∶
+#   @ @ @ @ @ @ @ @     -- conv. layer 5x5x4=>8 stride 2
+#   ∶∶∶∶∶∶∶∶∶∶∶∶∶∶∶
+#     @ @ @ @ @ @       -- conv. layer 4x4x8=>12 stride 2
+#     ∶∶∶∶∶∶∶∶∶∶∶
+#      \x/x\x\x/        -- fully connected layer (relu)
+#       · · · ·
+#       \x/x\x/         -- fully connected layer (softmax)
+#        · · ·
 
 # Read the training / testing dataset and labels
 xTrain, yTrain, xTest, yTest, yLabels = readDatabase(reshape=True)
@@ -27,6 +27,7 @@ firstConvLayerDepth = 4
 secondConvLayerDepth = 8
 thirdConvLayerDepth = 12
 numberOfNeurons = 200
+dropoutPerLayer = 0.25
 
 # Training hyperparameters
 learningRate = 0.001
@@ -53,7 +54,7 @@ model.add(Conv2D(firstConvLayerDepth, kernel_size=(5, 5),
 # output is 28x28
 
 model.add(BatchNormalization())
-model.add(Dropout(0.25))
+model.add(Dropout(dropoutPerLayer))
 model.add(Conv2D(secondConvLayerDepth, kernel_size=(5, 5),
                  activation='relu',
                  strides=(2, 2),
@@ -61,18 +62,20 @@ model.add(Conv2D(secondConvLayerDepth, kernel_size=(5, 5),
 # output is 14x14
 
 model.add(BatchNormalization())
-model.add(Dropout(0.25))
+model.add(Dropout(dropoutPerLayer))
 model.add(Conv2D(thirdConvLayerDepth, kernel_size=(5, 5),
                  activation='relu',
                  strides=(2, 2),
                  padding='same'))
 # output is 7x7
 model.add(BatchNormalization())
-model.add(Dropout(0.25))
+model.add(Dropout(dropoutPerLayer))
 model.add(Flatten())
+# output is 7x1
+
 model.add(Dense(numberOfNeurons, activation='relu'))
 model.add(BatchNormalization())
-model.add(Dropout(0.25))
+model.add(Dropout(dropoutPerLayer))
 model.add(Dense(numberOfClasses, activation='softmax'))
 
 sgd = Adam(lr=learningRate)

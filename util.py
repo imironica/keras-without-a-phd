@@ -92,7 +92,7 @@ def readDatabase(reshape=False, categoricalValues = True):
         zipFilenameTest = os.path.join(os.path.join(folderDb, 'mnist_test.zip'))
         unzipFile(zipFilenameTest, folderDb)
 
-    print('Reading dataset:')
+    print('Reading dataset ...')
     dfTrain = pd.read_csv("./dataset/mnist_train.csv", header=None)
     dfTest = pd.read_csv("./dataset/mnist_test.csv", header=None)
 

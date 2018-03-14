@@ -26,8 +26,10 @@ xTrain, yTrain, xTest, yTest, yLabels = readDatabase(reshape=True)
 firstConvLayerDepth = 4
 secondConvLayerDepth = 8
 thirdConvLayerDepth = 12
-numberOfNeurons = 200
+numberOfNeuronsFlatLayer = 512
+dropoutFlatLayer = 0.2
 
+kernelSize = (3, 3)
 # Training hyperparameters
 learningRate = 0.001
 noOfEpochs = 20
@@ -46,30 +48,32 @@ showPlot = False
 
 model = Sequential()
 
-model.add(Conv2D(32, (3, 3), input_shape=(28,28,1)))
+model.add(Conv2D(32, kernelSize, input_shape=(28, 28, 1)))
 model.add(BatchNormalization(axis=-1))
 model.add(Activation('relu'))
-model.add(Conv2D(32, (3, 3)))
-model.add(BatchNormalization(axis=-1))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2,2)))
 
-model.add(Conv2D(64,(3, 3)))
+model.add(Conv2D(32, kernelSize))
 model.add(BatchNormalization(axis=-1))
 model.add(Activation('relu'))
-model.add(Conv2D(64, (3, 3)))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+
+model.add(Conv2D(64, kernelSize))
 model.add(BatchNormalization(axis=-1))
 model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2,2)))
+
+model.add(Conv2D(64, kernelSize))
+model.add(BatchNormalization(axis=-1))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
 
 model.add(Flatten())
 
 # Fully connected layer
-model.add(Dense(512))
+model.add(Dense(numberOfNeuronsFlatLayer))
 model.add(BatchNormalization())
 model.add(Activation('relu'))
-model.add(Dropout(0.2))
-model.add(Dense(10))
+model.add(Dropout(dropoutFlatLayer))
+model.add(Dense(numberOfClasses))
 
 model.add(Activation('softmax'))
 
@@ -77,7 +81,6 @@ sgd = Adam(lr=learningRate)
 model.compile(optimizer=sgd,
               loss='categorical_crossentropy',
               metrics=['accuracy'])
-
 
 model.fit(x=xTrain,
           y=yTrain,
@@ -94,5 +97,4 @@ if showPlot:
     predictedValues = model.predict(xTest, batch_size=1)
     showConfusionMatrix(yLabels, predictedValues)
 
-
-# Acuracy
+# Acuracy: 99.50%
