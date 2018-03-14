@@ -36,8 +36,8 @@ layer4Size = 30
 # Train hyper-parameters
 learningRate = 0.003
 decay = 0.00035
-noOfEpochs = 9
-batchSize = 32
+noOfEpochs = 10
+batchSize = 100
 
 # Program parameters
 

@@ -34,7 +34,7 @@ layer4Size = 30
 learningRate = 0.003
 
 noOfEpochs = 10
-batchSize = 32
+batchSize = 100
 
 numberOfClasses = yTrain.shape[1]
 featureSize = xTrain.shape[1]
@@ -62,7 +62,9 @@ model.add(Dense(units=layer4Size,
                 activation="sigmoid",
                 kernel_initializer="uniform"))
 
-model.add(Dense(numberOfClasses, kernel_initializer="uniform", activation="softmax"))
+model.add(Dense(numberOfClasses,
+                kernel_initializer="uniform",
+                activation="softmax"))
 
 # Network training
 sgd = Adam(lr=learningRate)

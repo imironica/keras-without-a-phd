@@ -73,7 +73,6 @@ def showPerformance(accuracy, loss, noOfEpochs, history, plot=False):
         plt.show()
 
 
-
 # Load the data
 def unzipFile(fileToUnzip, folderToUnzip):
     print(fileToUnzip)
@@ -81,7 +80,7 @@ def unzipFile(fileToUnzip, folderToUnzip):
         zip_ref.extractall(folderToUnzip)
 
 
-def readDatabase(reshape=False):
+def readDatabase(reshape=False, categoricalValues = True):
     folderDb = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dataset')
 
     if not os.path.exists(os.path.join(folderDb, 'mnist_train.csv')):
@@ -93,13 +92,14 @@ def readDatabase(reshape=False):
         zipFilenameTest = os.path.join(os.path.join(folderDb, 'mnist_test.zip'))
         unzipFile(zipFilenameTest, folderDb)
 
+    print('Reading dataset:')
     dfTrain = pd.read_csv("./dataset/mnist_train.csv", header=None)
     dfTest = pd.read_csv("./dataset/mnist_test.csv", header=None)
 
     # ============================
     # Preprocess the training data
     yTrain = dfTrain[0]
-    yTrain = to_categorical(yTrain, num_classes=10)
+    yTrainCategorical = to_categorical(yTrain, num_classes=10)
 
     # Drop 'label' column
     xTrain = dfTrain.drop(labels=[0], axis=1)
@@ -118,9 +118,12 @@ def readDatabase(reshape=False):
     del dfTest
     del dfTrain
 
-    if reshape:
+    if reshape and categoricalValues:
         xTrain = xTrain.values.reshape(-1, 28, 28, 1)
         xTest = xTest.values.reshape(-1, 28, 28, 1)
-        return xTrain, yTrain, xTest, yTestCategorical, yTest
+        return xTrain, yTrainCategorical, xTest, yTestCategorical, yTest
 
-    return xTrain.as_matrix(), yTrain, xTest.as_matrix(), yTestCategorical, yTest
+    if categoricalValues:
+        return xTrain.as_matrix(), yTrainCategorical, xTest.as_matrix(), yTestCategorical, yTest
+
+    return xTrain.as_matrix(), yTrain, xTest.as_matrix(), yTest, None

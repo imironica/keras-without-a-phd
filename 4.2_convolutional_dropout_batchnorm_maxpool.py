@@ -1,7 +1,8 @@
 from util import readDatabase, AccuracyHistory, showPerformance, showConfusionMatrix
 from keras.models import Sequential
-from keras.layers.core import Dense, Dropout, Activation, Flatten
-from keras.layers.convolutional import Convolution2D, MaxPooling2D, Conv2D
+from keras.layers.core import Dropout, Flatten, Activation
+from keras.layers import Dense, BatchNormalization
+from keras.layers.convolutional import Conv2D, MaxPooling2D
 from keras.optimizers import Adam
 
 # Neural network structure for this sample:
@@ -29,7 +30,7 @@ numberOfNeurons = 200
 
 # Training hyperparameters
 learningRate = 0.001
-noOfEpochs = 3
+noOfEpochs = 20
 batchSize = 32
 
 numberOfClasses = yTrain.shape[1]
@@ -44,31 +45,33 @@ showPlot = False
 # Network architecture
 
 model = Sequential()
-model.add(Conv2D(firstConvLayerDepth, kernel_size=(5, 5),
-                 activation='relu',
-                 strides=(1, 1),
-                 padding='same',
-                 input_shape=(28, 28, 1)))
-model.add(Dropout(0.25))
-# output is 28x28
 
-model.add(Conv2D(secondConvLayerDepth, kernel_size=(5, 5),
-                 activation='relu',
-                 strides=(2, 2),
-                 padding='same'))
-model.add(Dropout(0.25))
-# output is 14x14
+model.add(Conv2D(32, (3, 3), input_shape=(28,28,1)))
+model.add(BatchNormalization(axis=-1))
+model.add(Activation('relu'))
+model.add(Conv2D(32, (3, 3)))
+model.add(BatchNormalization(axis=-1))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2,2)))
 
-model.add(Conv2D(thirdConvLayerDepth, kernel_size=(5, 5),
-                 activation='relu',
-                 strides=(2, 2),
-                 padding='same'))
-model.add(Dropout(0.25))
-# output is 7x7
+model.add(Conv2D(64,(3, 3)))
+model.add(BatchNormalization(axis=-1))
+model.add(Activation('relu'))
+model.add(Conv2D(64, (3, 3)))
+model.add(BatchNormalization(axis=-1))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2,2)))
+
 model.add(Flatten())
-model.add(Dense(numberOfNeurons, activation='relu'))
-model.add(Dropout(0.25))
-model.add(Dense(numberOfClasses, activation='softmax'))
+
+# Fully connected layer
+model.add(Dense(512))
+model.add(BatchNormalization())
+model.add(Activation('relu'))
+model.add(Dropout(0.2))
+model.add(Dense(10))
+
+model.add(Activation('softmax'))
 
 sgd = Adam(lr=learningRate)
 model.compile(optimizer=sgd,
@@ -92,4 +95,4 @@ if showPlot:
     showConfusionMatrix(yLabels, predictedValues)
 
 
-# Acuracy 0.99
+# Acuracy

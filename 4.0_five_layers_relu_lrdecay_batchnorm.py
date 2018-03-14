@@ -1,6 +1,6 @@
 from util import readDatabase, AccuracyHistory, showPerformance, showConfusionMatrix
 from keras.optimizers import Adam
-from keras.layers import Dense
+from keras.layers import Dense, BatchNormalization
 from keras.models import Sequential
 import numpy as np
 
@@ -27,23 +27,22 @@ np.random.seed(0)
 # Read the training / testing dataset and labels
 xTrain, yTrain, xTest, yTest, yLabels = readDatabase()
 
-# Network layer parameters
-
+# Network parameters
 layer1Size = 200
 layer2Size = 100
 layer3Size = 60
 layer4Size = 30
 
-# Learning hyper parameters
+# Train hyper-parameters
 learningRate = 0.003
-
+decay = 0.00035
 noOfEpochs = 10
 batchSize = 100
 
+# Program parameters
+
 numberOfClasses = yTrain.shape[1]
 featureSize = xTrain.shape[1]
-
-# Program parameters
 
 history = AccuracyHistory()
 verbose = 1
@@ -55,23 +54,23 @@ model.add(Dense(input_dim=featureSize,
                 kernel_initializer="uniform",
                 units=layer1Size,
                 activation='relu'))
-
+model.add(BatchNormalization())
 model.add(Dense(units=layer2Size,
                 activation="relu",
                 kernel_initializer="uniform"))
-
+model.add(BatchNormalization())
 model.add(Dense(units=layer3Size,
                 activation="relu",
                 kernel_initializer="uniform"))
-
+model.add(BatchNormalization())
 model.add(Dense(units=layer4Size,
                 activation="relu",
                 kernel_initializer="uniform"))
-
+model.add(BatchNormalization())
 model.add(Dense(numberOfClasses, kernel_initializer="uniform", activation="softmax"))
 
 # Network training
-sgd = Adam(lr=learningRate)
+sgd = Adam(lr=learningRate, decay=decay)
 model.compile(optimizer=sgd,
               loss='categorical_crossentropy',
               metrics=['accuracy'])
@@ -93,4 +92,4 @@ if showPlot:
 
 
 # Accuracy obtained:
-# 0.9785
+# 0.9816
