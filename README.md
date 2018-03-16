@@ -40,6 +40,39 @@ This case study shows how to create a model for **a classical OCR problem** usin
 # 3. Results and learnings
 [[back to the top]](#table-of-contents)
 
-We have tested a broad list of ML algorithms, starting from classical approaches *(SVM, Nearest neighbors, Naive Bayes, Random forests, Boosted trees)* to deep learning architectures *(feed forward and convolutional neural networks)*. 
+We have tested a broad list of ML algorithms, starting from classical approaches *(SVM, Nearest neighbors, Naive Bayes, Random forests, Boosted trees)* to deep learning architectures *(feed forward and convolutional neural networks)*.  All presented scores were computed using the accuracy metric.
 
+## Results with classical ML approaches
+<pre>- Nearest neighbors (3): 0.9705
+- Stochastic Gradient Descent: 0.8985
+- Naive Bayes: 0.5558
+- Decision Tree Classifier : 0.879
+- Adaboost Classifier : 0.7296
+- Gradient Boosting Classifier: 0.6615
+- Random Forest Classifier: 0.9704
+- Extremelly Trees Classifier: 0.9735
+- Linear SVM with C=0.01 : 0.9443
+- Linear SVM with C=0.1 : 0.9472
+- Linear SVM with C=1 : 0.9404
+- Linear SVM with C=10 : 0.931
+- RBF SVM with C=0.01 : 0.835
+- RBF SVM with C=0.1 : 0.9166
+- RBF SVM with C=1 : 0.9446
+- RBF SVM with C=10 : 0.9614
+ </pre>
+## Results with Feed Forward Neural Network architecture
 
+<pre>- One Softmax layer: 0.9187
+- Two layers: Sigmoid -> Softmax: 0.9676
+- Five sigmoid layers: 0.9745
+- Five relu layers layers: 0.9755
+- Five relu layers with learning rate decay: 0.9785
+- Five relu layers with learning rate decay and dropout: 0.9795
+</pre>
+
+## Results with Convolutional Neural Network architecture
+
+<pre>- 3 convolutional layers + flatten + softmax: 0.9862
+- 3 convolutional layers + flatten + dropout + softmax: 0.99
+- 3 convolutional layers + batch normalization + flatten + dropout + softmax + learning rate decay: 99.48
+</pre>

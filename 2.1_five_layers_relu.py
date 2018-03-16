@@ -93,4 +93,4 @@ if showPlot:
 
 
 # Accuracy obtained:
-# 0.9785
+# 0.9755

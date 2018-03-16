@@ -97,4 +97,4 @@ if showPlot:
     predictedValues = model.predict(xTest, batch_size=1)
     showConfusionMatrix(yLabels, predictedValues)
 
-# Acuracy: 99.50%
+# Acuracy: 99.48%
