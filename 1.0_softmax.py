@@ -16,7 +16,7 @@ xTrain, yTrain, xTest, yTest, yLabels = readDatabase()
 # Network parameters
 learningRate = 0.003
 
-noOfEpochs = 20
+noOfEpochs = 10
 batchSize = 32
 
 numberOfClasses = yTrain.shape[1]

@@ -1,7 +1,7 @@
 from util import readDatabase, AccuracyHistory, showPerformance, showConfusionMatrix
 from keras.models import Sequential
-from keras.layers.core import Dense, Dropout, Activation, Flatten
-from keras.layers.convolutional import Convolution2D, MaxPooling2D, Conv2D
+from keras.layers.core import Dense, Flatten
+from keras.layers.convolutional import MaxPooling2D, Conv2D
 from keras.optimizers import Adam
 
 # Neural network structure for this sample:
@@ -23,8 +23,12 @@ xTrain, yTrain, xTest, yTest, yLabels = readDatabase(reshape=True)
 
 # Network parameters
 firstConvLayerDepth = 6
+firstKernelSize = (5, 5)
 secondConvLayerDepth = 12
+secondKernelSize = (5, 5)
 thirdConvLayerDepth = 24
+thirdKernelSize = (5, 5)
+
 numberOfNeurons = 200
 
 # Training hyperparameters
@@ -44,23 +48,24 @@ showPlot = True
 # Network architecture
 
 model = Sequential()
-model.add(Conv2D(firstConvLayerDepth, kernel_size=(5, 5),
+model.add(Conv2D(firstConvLayerDepth, kernel_size=firstKernelSize,
                  activation='relu',
                  strides=(1, 1),
                  padding='same',
                  input_shape=(28, 28, 1)))
 # output is 28x28
 
-model.add(Conv2D(secondConvLayerDepth, kernel_size=(5, 5),
+model.add(Conv2D(secondConvLayerDepth, kernel_size=secondKernelSize,
                  activation='relu',
                  strides=(2, 2),
                  padding='same'))
 # output is 14x14
 
-model.add(Conv2D(thirdConvLayerDepth, kernel_size=(5, 5),
+model.add(Conv2D(thirdConvLayerDepth, kernel_size=thirdKernelSize,
                  activation='relu',
                  strides=(2, 2),
                  padding='same'))
+
 # output is 7x7
 model.add(Flatten())
 model.add(Dense(numberOfNeurons, activation='relu'))

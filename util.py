@@ -8,6 +8,7 @@ import numpy as np
 import itertools
 from sklearn.metrics import confusion_matrix
 
+
 class AccuracyHistory(keras.callbacks.Callback):
     def on_train_begin(self, logs={}):
         self.acc = []
@@ -19,9 +20,9 @@ class AccuracyHistory(keras.callbacks.Callback):
 
 
 def plotConfusionMatrix(cm, classes,
-                          normalize=False,
-                          title='Confusion matrix',
-                          cmap=plt.cm.Blues):
+                        normalize=False,
+                        title='Confusion matrix',
+                        cmap=plt.cm.Blues):
     """
     This function prints and plots the confusion matrix.
     Normalization can be applied by setting `normalize=True`.
@@ -80,7 +81,7 @@ def unzipFile(fileToUnzip, folderToUnzip):
         zip_ref.extractall(folderToUnzip)
 
 
-def readDatabase(reshape=False, categoricalValues = True):
+def readDatabase(reshape=False, categoricalValues=True):
     folderDb = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dataset')
 
     if not os.path.exists(os.path.join(folderDb, 'mnist_train.csv')):
@@ -127,3 +128,42 @@ def readDatabase(reshape=False, categoricalValues = True):
         return xTrain.as_matrix(), yTrainCategorical, xTest.as_matrix(), yTestCategorical, yTest
 
     return xTrain.as_matrix(), yTrain, xTest.as_matrix(), yTest, None
+
+
+def displayImagesAndLabels(images, labels):
+    labels = labels.tolist()
+    """Display the first image of each label."""
+    unique_labels = set(labels)
+    plt.figure(figsize=(15, 15))
+    i = 1
+
+    for label in unique_labels:
+        # Pick the first image for each label.
+
+        image = images[labels.index(label)]
+        plt.subplot(4, 3, i)  # A grid of 8 rows x 8 columns
+        plt.axis('off')
+        plt.title("Label {0} ({1})".format(label, labels.count(label)))
+        i += 1
+
+        image = image.reshape(28, 28)
+        _ = plt.imshow(image, cmap='gray')
+    plt.show()
+
+def displayLabelImages(images, labels, label):
+    """Display images of a specific label."""
+    labels = labels.tolist()
+    limit = 48  # show a max of 24 images
+    plt.figure(figsize=(15, 5))
+    i = 1
+    indexes = [i for i in range(0,len(labels)) if labels[i] == label][0:limit]
+
+    for index in indexes:
+        image = images[index]
+        plt.subplot(6, 8, i)  # 3 rows, 8 per row
+        plt.axis('off')
+        i += 1
+        image = image.reshape(28, 28)
+        plt.imshow(image)
+    plt.show()
+
