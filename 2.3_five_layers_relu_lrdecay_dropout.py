@@ -20,6 +20,22 @@ import numpy as np
 #          ·                                                        Y5 [batch, 10]
 
 import tensorflow as tf
+import argparse
+
+ap = argparse.ArgumentParser()
+ap.add_argument("-v", "--verbose", required=False, help="show images (0 = False, 1 = True)")
+args = vars(ap.parse_args())
+
+verbose = args["verbose"]
+
+if verbose is None:
+    verbose = False
+else:
+    if verbose == '1':
+        verbose = True
+    else:
+        verbose = False
+
 print("Tensorflow version " + tf.__version__)
 tf.set_random_seed(0)
 np.random.seed(0)
@@ -45,8 +61,7 @@ featureSize = xTrain.shape[1]
 # Program parameters
 
 history = AccuracyHistory()
-verbose = 1
-showPlot = True
+showPlot = verbose
 
 # Network architecture
 model = Sequential()

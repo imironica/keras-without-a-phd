@@ -18,6 +18,22 @@ from keras.optimizers import Adam
 #       \x/x\x/         -- fully connected layer (softmax)      W5 [200, 10]           B5 [10]
 #        · · ·                                                  Y [batch, 10]
 
+import argparse
+
+ap = argparse.ArgumentParser()
+ap.add_argument("-v", "--verbose", required=False, help="show images (0 = False, 1 = True)")
+args = vars(ap.parse_args())
+
+verbose = args["verbose"]
+
+if verbose is None:
+    verbose = False
+else:
+    if verbose == '1':
+        verbose = True
+    else:
+        verbose = False
+
 # Read the training / testing dataset and labels
 xTrain, yTrain, xTest, yTest, yLabels = readDatabase(reshape=True)
 
@@ -38,8 +54,8 @@ featureSize = xTrain.shape[1]
 # Program parameters
 
 history = AccuracyHistory()
-verbose = 1
-showPlot = False
+
+showPlot = verbose
 
 # Network architecture
 
@@ -80,7 +96,7 @@ model.fit(x=xTrain,
           y=yTrain,
           epochs=noOfEpochs,
           batch_size=batchSize,
-          verbose=verbose,
+          verbose=1,
           callbacks=[history])
 
 (loss, accuracy) = model.evaluate(xTest, yTest)
@@ -92,4 +108,4 @@ if showPlot:
     showConfusionMatrix(yLabels, predictedValues)
 
 
-# Acuracy 0.99
+# Acuracy 0.9858

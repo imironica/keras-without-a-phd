@@ -156,6 +156,7 @@ def displayLabelImages(images, labels, label):
     limit = 48  # show a max of 24 images
     plt.figure(figsize=(15, 5))
     i = 1
+
     indexes = [i for i in range(0,len(labels)) if labels[i] == label][0:limit]
 
     for index in indexes:

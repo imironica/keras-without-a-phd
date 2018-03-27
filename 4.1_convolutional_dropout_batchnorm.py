@@ -22,6 +22,22 @@ from keras.optimizers import Adam
 # Read the training / testing dataset and labels
 xTrain, yTrain, xTest, yTest, yLabels = readDatabase(reshape=True)
 
+import argparse
+
+ap = argparse.ArgumentParser()
+ap.add_argument("-v", "--verbose", required=False, help="show images (0 = False, 1 = True)")
+args = vars(ap.parse_args())
+
+verbose = args["verbose"]
+
+if verbose is None:
+    verbose = False
+else:
+    if verbose == '1':
+        verbose = True
+    else:
+        verbose = False
+
 # Network parameters
 firstConvLayerDepth = 4
 secondConvLayerDepth = 8
@@ -40,8 +56,8 @@ featureSize = xTrain.shape[1]
 # Program parameters
 
 history = AccuracyHistory()
-verbose = 1
-showPlot = False
+
+showPlot = verbose
 
 # Network architecture
 
@@ -88,7 +104,7 @@ model.fit(x=xTrain,
           y=yTrain,
           epochs=noOfEpochs,
           batch_size=batchSize,
-          verbose=verbose,
+          verbose=1,
           callbacks=[history])
 
 (loss, accuracy) = model.evaluate(xTest, yTest)
