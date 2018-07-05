@@ -4,6 +4,7 @@ from keras.layers.core import Dropout, Flatten, Activation
 from keras.layers import Dense, BatchNormalization
 from keras.layers.convolutional import Conv2D, MaxPooling2D
 from keras.optimizers import Adam
+from keras import backend as K
 
 # Neural network structure for this sample:
 #
@@ -97,4 +98,5 @@ if showPlot:
     predictedValues = model.predict(xTest, batch_size=1)
     showConfusionMatrix(yLabels, predictedValues)
 
+K.clear_session()
 # Acuracy: 99.48%

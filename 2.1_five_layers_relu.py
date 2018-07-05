@@ -3,7 +3,7 @@ from keras.optimizers import Adam
 from keras.layers import Dense
 from keras.models import Sequential
 import numpy as np
-
+from keras import backend as K
 # neural network with 5 layers
 #
 # · · · · · · · · · ·          (input data, flattened pixels)       X [batch, 784]   # 784 = 28*28
@@ -105,6 +105,6 @@ if showPlot:
     predictedValues = model.predict(xTest, batch_size=1)
     showConfusionMatrix(yLabels, predictedValues)
 
-
+K.clear_session()
 # Accuracy obtained:
 # 0.9755

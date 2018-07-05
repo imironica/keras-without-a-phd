@@ -24,8 +24,6 @@ Get the source code
 
 *cd keras-without-a-phd*
 
-*git init*
-
 *git clone https://github.com/imironica/keras-without-a-phd.git*
 
 Install latest python packages from *requirements.txt* file

@@ -6,6 +6,8 @@ from keras.models import Sequential
 import numpy as np
 import argparse
 import tensorflow as tf
+from keras import backend as K
+
 print("Tensorflow version " + tf.__version__)
 tf.set_random_seed(0)
 np.random.seed(0)
@@ -70,6 +72,6 @@ if showPlot:
     predictedValues = model.predict(xTest, batch_size=1)
     showConfusionMatrix(yLabels, predictedValues)
 
-
+K.clear_session()
 # Accuracy obtained:
 # 0.9187

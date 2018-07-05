@@ -4,6 +4,7 @@ from keras.layers import Dense
 from keras.layers import Dropout
 from keras.models import Sequential
 import numpy as np
+from keras import backend as K
 
 # neural network with 5 layers
 #
@@ -98,7 +99,7 @@ model.fit(x=xTrain,
           y=yTrain,
           epochs=noOfEpochs,
           batch_size=batchSize,
-          verbose=verbose,
+          verbose=1,
           callbacks=[history])
 
 (loss, accuracy) = model.evaluate(xTest, yTest)
@@ -109,6 +110,6 @@ if showPlot:
     predictedValues = model.predict(xTest, batch_size=1)
     showConfusionMatrix(yLabels, predictedValues)
 
-
+K.clear_session()
 # Accuracy obtained:
 # 0.9789

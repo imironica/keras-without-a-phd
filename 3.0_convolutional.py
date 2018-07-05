@@ -3,7 +3,7 @@ from keras.models import Sequential
 from keras.layers.core import Dense, Flatten
 from keras.layers.convolutional import MaxPooling2D, Conv2D
 from keras.optimizers import Adam
-
+from keras import backend as K
 # Neural network structure for this sample:
 #
 # · · · · · · · · · ·      (input data, 1-deep)                 X [batch, 28, 28, 1]
@@ -109,5 +109,5 @@ if showPlot:
     predictedValues = model.predict(xTest, batch_size=1)
     showConfusionMatrix(yLabels, predictedValues)
 
-
+K.clear_session()
 # Acuracy 0.9862
